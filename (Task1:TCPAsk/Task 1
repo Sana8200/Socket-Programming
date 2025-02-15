@@ -1,3 +1,0 @@
-Task 1: TCPAsk Client
-	•	Implement a TCP client that connects to a server and displays the response.
-	•	The TCPClient class is the main focus, where you’ll learn how to interact with a remote TCP server.
