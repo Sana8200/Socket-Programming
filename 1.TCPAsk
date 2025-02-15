@@ -1,0 +1,2 @@
+/(Task1:TCPAsk/)
+Implementing a TCP client in Java that connects to a remote server, retrieves data, and displays it on the console. The client should communicate with any TCP server and print the server’s response to the user.
