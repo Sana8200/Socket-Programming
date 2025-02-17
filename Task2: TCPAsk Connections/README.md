@@ -5,4 +5,4 @@ The server processes incoming HTTP requests and sends the received content back 
 
 I implemented the server to handle incoming HTTP requests, parse the data, and send it back in a properly structured HTTP response. 
 
-`TCPAsk.java` – An example Java program that uses the `tcpclient.TCPClient` class.
+`TCPAsk.java` – An example Java program that uses the `TCPClient` class.
