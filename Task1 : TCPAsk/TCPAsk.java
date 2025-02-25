@@ -49,7 +49,7 @@ public class TCPAsk {
         }
 
         try {
-            TCPClient tcpClient = new tcpclient.TCPClient();
+            TCPClient tcpClient = new TCPClient();
             byte[] serverBytes;
             if (userInputBytes != null) {
                 serverBytes = tcpClient.askServer(hostname, port, userInputBytes);
