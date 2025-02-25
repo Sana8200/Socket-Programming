@@ -1,17 +1,37 @@
+IK1203VT25
+        /
+        sanamo-HTTPAskServer
+        Search or jump to…
+        Type / to search
+        Code
+        Issues
+        Pull requests
+        Projects
+        Wiki
+        Security
+        Insights
+        sanamo-HTTPAskServer/HTTPAsk.java
+
+        Sana New version of code
+        Latest commit 84a2ad7 4 hours ago
+        History
+        1 contributor
+        312 lines (253 sloc)  12 KB
+
+
 import java.net.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-
 public class HTTPAsk {
 
   // Query parameters
-  static String hostname;      // Domain name for the host
-  static String string;        // Data to send to server
+  static String hostname = "";      // Domain name for the host
+  static String string = "";        // Data to send to server
   static int port;             // Port number
-  static int clientPort;
+  static Integer servicePort = null;
   static boolean shutdown = false;     // Shutdown flag
   static Integer limit = null;        // data limits in bytes
   static Integer timeout = null;      // Maximum iwth time in ms
@@ -23,7 +43,7 @@ public class HTTPAsk {
 
 
   public static void main(String[] args) throws IOException {
-    port = Integer.parseInt(args[0]);
+    port = Integer.parseInt(args[0]);  // Server port
     ServerSocket serverSocket = new ServerSocket(port);
     System.out.println("Server is running on port " + port);
 
@@ -34,102 +54,45 @@ public class HTTPAsk {
     }
   }
 
-  //Invalid HTTP Request (Bad Request) 400 Bad Request
-  //BadRequestException
-          /* If the HTTP request has invalid parameters,
-             such as an incorrect URI (e.g., not starting with “/ask”),
-             or any other malformed HTTP request that does not comply with the HTTP standards.*/
-
-  //Invalid Host or Network Issues:
-  //IOException, UnknownHostException, ConnectException
-          /* If the server cannot connect to the requested host (e.g., due to a non-existent host,
-          unreachable server, or closed port). */
-
-  //Page Not Found (404 Error)
-  //PageNotFoundException (or a similar custom exception)
-          /*If the URI in the HTTP request is valid but the requested resource does not exist
-          (e.g., if the URI doesn’t map to any recognized endpoint or service on your server). */
-
-  //General Server Error (500 Error):
-  //ServerErrorException (or similar)
-          /*  If there’s a general internal error in the server, such as database issues,
-          or errors that don’t fall into the “bad request” or “page not found” categories. */
-
-  //Socket Timeouts or Connection Issues:
-  //SocketTimeoutException, IOException
-  /*If the client attempts to connect to a server, but the connection times out or the server is unresponsive.*/
-
-  //General Exception Handling:
-  //Exception
-  /*Any unexpected exceptions not handled by the specific error cases.*/
-
-
-
-  // 1. Handling IOException:
-  //IOException is the most common exception you will encounter while working with sockets in Java.
-  // It can be thrown if there are network issues or problems with reading/writing data to a socket.
-
-  //2. Handling UnknownHostException:
-  //This exception occurs when the host you are trying to connect to cannot be resolved, i.e.,
-  // the server address doesn’t exist or is invalid.
-
-  //3. Handling SocketTimeoutException:
-  //This exception occurs when a socket connection times out while waiting for a response from the server.
-
-  //4. Handling ConnectException:
-  //This exception occurs when a connection to a server fails.
-  // It can happen if the server is down, the port is closed, or the server is unreachable.
-
-  //5. Handling NullPointerException:
-  //In case an unexpected null value is passed around (such as a null socket object),
-  // you should catch this exception and handle it accordingly.
-
 
   /** Accepting new client */
   public static void acceptingClient(Socket clientSocket) throws IOException {
-    String responseBody = "";
+    String serviceResponseBody = "";
     String responseStatus = "HTTP/1.1 200 OK\r\n";
 
-    try (
-            BufferedReader inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            PrintWriter outToClient = new PrintWriter(clientSocket.getOutputStream(), true)
-    ) {
-      System.out.println("Hello client, It's Sana's server");
+    StringBuilder requestBuilder = new StringBuilder();
+    String line;
 
-      StringBuilder builder = new StringBuilder();
-      String line;
+    try {
+      BufferedReader inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+      PrintWriter outToClient = new PrintWriter(clientSocket.getOutputStream(), true);
+
       while ((line = inFromClient.readLine()) != null && !line.isEmpty()) {
-        builder.append(line).append("\r\n");
+        requestBuilder.append(line).append("\r\n");
       }
 
-      String request = builder.toString();
 
-      System.out.println("Request Of the Client: " + request);
-
+      String request = requestBuilder.toString();
       if (request.isEmpty()) {
-        System.out.println(HTTP400);
-        outToClient.println(HTTP400);
+        outToClient.print(HTTP400 + "Empty request!");
         return;
       }
 
+      System.out.println("Request Of the Client: " + request);
 
       try {
-        parseRequests(request, port);
+        parseRequests(request);
         System.out.println("Parsed request successfully");
 
-        TCPClient client = new TCPClient(shutdown, timeout, limit);
+        TCPClient service = new TCPClient(shutdown, timeout, limit);
 
-        System.out.println("Is the client processing ?");
-
-        byte[] toServerBytes;
-        if (string != null) {
-          toServerBytes = string.getBytes(StandardCharsets.UTF_8);
-        } else {
-          toServerBytes = null;
+        byte[] toServiceBytes = null;
+        if (!string.isEmpty()) {
+          toServiceBytes = string.getBytes(StandardCharsets.UTF_8);
         }
 
-        byte[] responseBytes = client.askServer(hostname, clientPort, toServerBytes);
-        responseBody = new String(responseBytes, StandardCharsets.UTF_8);
+        byte[] serviceResponseBytes = service.askServer(hostname, servicePort, toServiceBytes);
+        serviceResponseBody = new String(serviceResponseBytes, StandardCharsets.UTF_8);
 
         System.out.println("Successfully communicated with the target server");
         System.out.println("| Port: " + port + " | Hostname: " + hostname);
@@ -137,41 +100,35 @@ public class HTTPAsk {
 
       } catch (IllegalArgumentException e) {
         responseStatus = HTTP400;
-        responseBody = "Invalid request parameters: " + e.getMessage();
+        serviceResponseBody = "Invalid request parameters: " + e.getMessage();
       } catch (SocketTimeoutException e) {
         responseStatus = HTTP408;
-        responseBody = "Request Timeout: " + e.getMessage();
+        serviceResponseBody = "Request Timeout: " + e.getMessage();
       } catch (UnknownHostException e) {
         responseStatus = HTTP404;
-        responseBody = "Unknown Host: " + e.getMessage();
+        serviceResponseBody = "Unknown Host: " + e.getMessage();
       } catch (IOException e) {
         responseStatus = HTTP400;
-        System.out.println("Why internel server error every time ?!");
-        responseBody = "Internal Server Error: " + e.getMessage();
+        serviceResponseBody = "Internal Server Error: " + e.getMessage();
       } catch (Exception e) {
         responseStatus = HTTP400;
-        System.out.println("What happend here ?!");
-        responseBody = "Unexpected Exception: " + e.getMessage();
+        serviceResponseBody = "Unexpected Exception: " + e.getMessage();
       }
 
-      System.out.println("Is Client has any problems, whay client sending wrong ones ");
-
       String httpDate = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now());
-      System.out.println("Response Status: " + responseStatus);
 
-      String responseHeader = responseStatus +
+      String clientResponse = responseStatus +
               "Server: SanaServer\r\n" +
               "Content-Type: text/plain; charset=UTF-8\r\n" +
               "Date: " + httpDate + "\r\n" +
-              "Content-Length: " + responseBody.getBytes(StandardCharsets.UTF_8).length + "\r\n\r\n"
-              + responseBody;
+              "Content-Length: " + serviceResponseBody.length() + "\r\n\r\n"
+              + serviceResponseBody;
 
-      outToClient.print(responseHeader);
-      System.out.println(responseHeader);
+      outToClient.print(clientResponse);
+      System.out.println(clientResponse);
       outToClient.flush();
 
       System.out.println("Response sent to the client.");
-
     } catch (IOException e) {
       System.err.println("Error processing client request: " + e.getMessage());
     } finally {
@@ -182,7 +139,7 @@ public class HTTPAsk {
 
 
   /** Parsing the request */
-  public static void parseRequests(String request, int port) throws IllegalArgumentException {
+  public static void parseRequests(String request) throws IllegalArgumentException {
 
     // GET /ask?hostname=time.nist.gov&limit=1200&port=13 HTTP/1.1
 
@@ -193,24 +150,32 @@ public class HTTPAsk {
     //		[2]  "HTTP/1.1"
     String[] requestLines = request.split("\r\n");
 
+    if (requestLines.length == 0) {
+      throw new IllegalArgumentException(HTTP400 + "Invalid request: " + request);
+    }
+
 
     // ["/ask", "hostname=time.nist.gov&limit=1200&port=13"]                    requestParts, splitting at ?
     //      [0]  "/ask"
     //      [1]  "hostname=time.nist.gov&limit=1200&port=13"
     String[] requestParts = requestLines[0].split(" ");
+    if (!"GET".equals(requestParts[0])) {
+      throw new IllegalArgumentException(HTTP400 + "Only GET requests are accepted.");
+    }
 
+    if (!requestParts[2].equals("HTTP/1.1")) {
+      throw new IllegalArgumentException("505 HTTP Version Not Supported");
+    }
 
+    if (!requestParts[1].startsWith("/ask?")) {
+      throw new IllegalArgumentException(HTTP400 + "Invalid endpoint. Use /ask?");
+    }
     // ["hostname=time.nist.gov", "limit=1200", "port=13"]                     parameters, splitting by &
     //     	[0]  "hostname=time.nist.gov"
     //		[1]  "limit=1200"
     //		[2]  "port=13"     client port
-    String url = requestParts[1];
-    String[] parameters = url.substring(5).split("&");
-
-    System.out.println("Parsed parameters:     Parse the correct ones come on");
-    System.out.println("Hostname: " + hostname);
-    System.out.println("Port: " + clientPort);
-
+    String url = requestParts[1].substring(5);
+    String[] parameters = url.split("&");
 
     // ["hostname=time.nist.gov"]                                             key value, splitting by =, looping
     //      [0]  "hostname"
@@ -224,67 +189,80 @@ public class HTTPAsk {
     //      [0]  "port"
     //      [1]  "13"
 
-    if (requestParts.length < 3 && requestLines.length == 0) {
-      throw new IllegalArgumentException( HTTP400 + " Malformed HTTP request.");
-    }
 
-    if (!"GET".equals(requestParts[0])) {
-      throw new IllegalArgumentException( HTTP400 + "GET requests are accepted.");
-    }
-
-    if (!requestParts[2].equals("HTTP/1.1")) {
-      throw new IllegalArgumentException("505 HTTP Version Not Supported");
-    }
-
-    System.out.println("URI being processed:  " + requestParts[1] + "\r\n" + requestParts[2] + "Is it Prcoessing with Sana's server right?");
-    if (!requestParts[1].startsWith("/ask?")) {
-      throw new IllegalArgumentException(HTTP400 + "Invalid endpoint. Use /ask?");
-    }
-    System.out.println("Ok ask is fine");
-
-    boolean hostnamePresent = false;
+    // Reset / clean the previous request state
+    hostname = "";
+    servicePort = null;
+    string = "";
+    shutdown = false;
+    limit = null;
+    timeout = null;
 
     for (String param : parameters) {
       String[] keyValue = param.split("=");
+      if (keyValue.length != 2) {
+        throw new IllegalArgumentException(HTTP400 + "Invalid parameter: " + param);
+      }
+      String key = keyValue[0];
       String value = keyValue[1];
-      if ("hostname".equals(keyValue[0])){
-        hostname = value;
-        hostnamePresent = true;
-      }
-      try {
-        switch (keyValue[0]) {
-          case "hostname":
-            hostname = value;
-            break;
-          case "port":
-            clientPort = Integer.parseInt(value);
-            break;
-          case "string":
-            string = value + "\n";
-            break;
-          case "shutdown":
+
+      System.out.println(key + "=" + value);
+
+      switch (key) {
+        case "hostname":
+          if (value.isEmpty()) {
+            throw new IllegalArgumentException(HTTP400 + " Missing or empty 'hostname' value.");
+          }
+          hostname = value;
+          break;
+        case "port":
+          try {
+            servicePort = Integer.parseInt(value);  // Client port from request parameter
+          } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(HTTP400 + "'port' parameter value (" + value + ") is not an integer!");
+          }
+          break;
+        case "string":
+          string = value + "\n";
+          break;
+        case "shutdown":
+          try {
             shutdown = Boolean.parseBoolean(value);
-            break;
-          case "timeout":
+          } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(HTTP400 + "'shutdown' parameter value (" + value + ") is not a boolean!");
+          }
+          break;
+        case "timeout":
+          try {
             timeout = Integer.parseInt(value);
-            break;
-          case "limit":
+          } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(HTTP400 + "'timeout' parameter value (" + value + ") is not an integer!");
+          }
+          break;
+        case "limit":
+          try {
             limit = Integer.parseInt(value);
-            break;
-        }
-      } catch (NumberFormatException e) {
-        throw new IllegalArgumentException( HTTP400 + "Invalid parameter value: " + keyValue[0]);
+          } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(HTTP400 + "'limit' parameter value (" + value + ") is not an integer!");
+          }
+          break;
+        default:
+          throw new IllegalArgumentException(HTTP400 + "Invalid parameter key: " + key);
       }
     }
 
-    if (!hostnamePresent || hostname == null || hostname.isEmpty()) {
-      throw new IllegalArgumentException( HTTP400 + " Missing or empty 'hostname' parameter.");
-    }
     System.out.println("Parsed hostname: " + hostname);
-    System.out.println("Parsed port: " + clientPort);
-    System.out.println("Attempting to connect to " + hostname + " on port " + clientPort);
-  }
+    System.out.println("Parsed service port: " + servicePort);
+    System.out.println("Attempting to connect to " + hostname + " on port " + servicePort);
 
+    if (hostname.isEmpty()) {
+      throw new IllegalArgumentException(HTTP400 + " Service hostname should be provided");
+    }
+
+    if (servicePort == null) {
+      throw new IllegalArgumentException(HTTP400 + " Service port should be provided");
+    }
+  }
 
 
   // TCP Client
