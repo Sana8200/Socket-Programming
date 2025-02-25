@@ -1,3 +1,5 @@
+import tcpclient.tcpclient.TCPClient;
+
 import java.net.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -63,7 +65,7 @@ public class HTTPAsk {
         parseRequests(request);
         System.out.println("Parsed request successfully");
 
-        tcpclient.TCPClient service = new tcpclient.TCPClient(shutdown, timeout, limit);
+        TCPClient service = new TCPClient(shutdown, timeout, limit);
 
         byte[] toServiceBytes = null;
         if (!string.isEmpty()) {

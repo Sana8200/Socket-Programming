@@ -1,6 +1,5 @@
-import java.net.*;
 import java.io.*;
-import tcpclient.TCPClient;
+import tcpclient.tcpclient.TCPClient;
 
 public class TCPAsk {
 	static boolean shutdown = false;             // True if client should shutdown connection
@@ -86,7 +85,7 @@ public class TCPAsk {
     public static void main( String[] args) {
         parseArgs(args);
 		try {
-			TCPClient tcpClient = new tcpclient.TCPClient(shutdown, timeout, limit);
+			TCPClient tcpClient = new TCPClient(shutdown, timeout, limit);
 			byte[] serverBytes  = tcpClient.askServer(hostname, port, userInputBytes);
 			String serverOutput = new String(serverBytes);
 			System.out.printf("%s:%d says:\n%s", hostname, port, serverOutput);

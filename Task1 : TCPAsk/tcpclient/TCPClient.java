@@ -1,4 +1,4 @@
-package tcpclient;
+package tcpclient.tcpclient;
 import java.io.IOException;
 import java.io.*;
 import java.net.*;
