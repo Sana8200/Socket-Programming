@@ -1,4 +1,5 @@
 import java.io.IOException;
+
 import tcpclient.TCPClient;
 
 public class TCPAsk {
@@ -17,8 +18,8 @@ public class TCPAsk {
         String hostname = null;
         int port = 0;
         //byte[] userInputBytes = new byte[0];
-		byte[] userInputBytes = null;		
-        
+        byte[] userInputBytes = null;
+
         try {
             // Get mandatory command line arguments: hostname and port number
             int argindex = 0;
@@ -48,14 +49,14 @@ public class TCPAsk {
         }
 
         try {
-            TCPClient tcpClient = new tcpclient.tcpclient.TCPClient();
+            TCPClient tcpClient = new tcpclient.TCPClient();
             byte[] serverBytes;
-			if (userInputBytes != null) {
-				serverBytes = tcpClient.askServer(hostname, port, userInputBytes);
-			}
-			else {
-				serverBytes = tcpClient.askServer(hostname, port);
-			}
+            if (userInputBytes != null) {
+                serverBytes = tcpClient.askServer(hostname, port, userInputBytes);
+            }
+            else {
+                serverBytes = tcpClient.askServer(hostname, port);
+            }
             String serverOutput = new String(serverBytes);
             System.out.printf("%s:%d says:\n%s", hostname, port, serverOutput);
         } catch(IOException ex) {
@@ -64,4 +65,3 @@ public class TCPAsk {
         }
     }
 }
-
