@@ -1,5 +1,6 @@
+import java.net.*;
 import java.io.*;
-import tcpclient.tcpclient.TCPClient;
+import tcpclient.TCPClient;
 
 public class TCPAsk {
 	static boolean shutdown = false;             // True if client should shutdown connection
@@ -9,17 +10,17 @@ public class TCPAsk {
 	static int port = 0;					     // Server port number
 	static byte[] userInputBytes = new byte[0];  // Data to send to server
 
-    /*
-     * Usage: explain how to use the program, then exit with failure status
-     */
-    private static void usage() {
-        System.err.println("Usage: TCPAsk [options] host port <data to server>");
-        System.err.println("Possible options are:");
-        System.err.println("    --shutdown");
-        System.err.println("    --timeout <milliseconds>");
-        System.err.println("    --limit <bytes>");
-        System.exit(1);
-    }
+	/*
+	 * Usage: explain how to use the program, then exit with failure status
+	 */
+	private static void usage() {
+		System.err.println("Usage: TCPAsk [options] host port <data to server>");
+		System.err.println("Possible options are:");
+		System.err.println("    --shutdown");
+		System.err.println("    --timeout <milliseconds>");
+		System.err.println("    --limit <bytes>");
+		System.exit(1);
+	}
 
 	/*
 	 * Parse arguments on command line
@@ -71,21 +72,21 @@ public class TCPAsk {
 				userInputBytes = builder.toString().getBytes();
 			}
 		} catch (ArrayIndexOutOfBoundsException | NumberFormatException ex) {
-				// Exceeded array while parsing command line, or could
-				// not convert port number argument to integer -- tell user
-				// how to use the program
-				usage();
+			// Exceeded array while parsing command line, or could
+			// not convert port number argument to integer -- tell user
+			// how to use the program
+			usage();
 		}
 	}
 
 
-    /*
-     * Main program. Parse arguments on command line and call TCPClient
-     */
-    public static void main( String[] args) {
-        parseArgs(args);
+	/*
+	 * Main program. Parse arguments on command line and call TCPClient
+	 */
+	public static void main( String[] args) {
+		parseArgs(args);
 		try {
-			TCPClient tcpClient = new TCPClient(shutdown, timeout, limit);
+			TCPClient tcpClient = new tcpclient.TCPClient(shutdown, timeout, limit);
 			byte[] serverBytes  = tcpClient.askServer(hostname, port, userInputBytes);
 			String serverOutput = new String(serverBytes);
 			System.out.printf("%s:%d says:\n%s", hostname, port, serverOutput);

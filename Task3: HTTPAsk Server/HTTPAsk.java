@@ -1,5 +1,3 @@
-import tcpclient.tcpclient.TCPClient;
-
 import java.net.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;

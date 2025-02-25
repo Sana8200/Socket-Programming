@@ -1,6 +1,6 @@
-package tcpclient;
 import java.io.IOException;
 
+import tcpclient.TCPClient;
 
 public class TCPAsk {
     /*
@@ -49,7 +49,7 @@ public class TCPAsk {
         }
 
         try {
-            TCPClient tcpClient = new TCPClient();
+            TCPClient tcpClient = new tcpclient.TCPClient();
             byte[] serverBytes;
             if (userInputBytes != null) {
                 serverBytes = tcpClient.askServer(hostname, port, userInputBytes);

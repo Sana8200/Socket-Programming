@@ -5,10 +5,10 @@ The server processes incoming HTTP requests and sends the received content back 
 
 I implemented the server to handle incoming HTTP requests, parse the data, and send it back in a properly structured HTTP response. 
 
-`TCPAsk.java` – An example Java program that uses the `TCPClient` class.
+`TCPAsk.java` – An example Java program that uses the `tcpclient.tcpclient.TCPClient` class.
 
 
-TCPClient - Java TCP Client with Timeout, Shutdown, and Limit Features
+tcpclient.tcpclient.TCPClient - Java TCP Client with Timeout, Shutdown, and Limit Features
 This Java class implements a TCP client that connects to a specified server and port, sends data, and receives a response. It supports:
 - Timeout handling – Stops reading if the server takes too long to respond.
 - Shutdown option – Allows closing the output stream after sending data.
