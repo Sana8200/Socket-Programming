@@ -1,6 +1,6 @@
+package tcpclient;
 import java.io.IOException;
 
-import tcpclient.TCPClient;
 
 public class TCPAsk {
     /*
