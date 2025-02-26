@@ -108,6 +108,7 @@ public class HTTPAsk {
       outToClient.flush();
 
       System.out.println("Response sent to the client.");
+      
     } catch (IOException e) {
       System.err.println("Error processing client request: " + e.getMessage());
     } finally {
