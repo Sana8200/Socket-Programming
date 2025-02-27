@@ -13,7 +13,7 @@ public class ConcHTTPAsk {
         while (true) {
             Socket clientSocket = serverSocket.accept();
             System.out.println("Client connected");
-            //Connecetion socket which is Client socket is argument for Thread
+            // Connection socket which is Client socket is argument for Thread
             Thread clientThread = new Thread(new MyRunnable(clientSocket));
             clientThread.setName("ClientHandler-" + clientSocket.getPort());
             clientThread.start();
