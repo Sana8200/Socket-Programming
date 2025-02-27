@@ -1,4 +1,4 @@
-# HTTPAsk Server
+## HTTPAsk Server
 
 In Task 3, I developed an HTTP server that acts as both a server and a client. It accepts HTTP requests with query parameters specifying the target server’s hostname and port. 
 Upon receiving a request, the server uses a tcpclient.tcpclient.TCPClient to communicate with the specified server, retrieves the response, and sends it back as part of the HTTP response body.
@@ -6,7 +6,7 @@ Upon receiving a request, the server uses a tcpclient.tcpclient.TCPClient to com
 This task involved integrating the TCP client from Task 1 into an HTTP server, effectively creating a web-based version of the TCP client.
 
 
-## Features
+### Features
 - Parses HTTP GET requests with query parameters.
 - Communicates with a specified TCP server based on extracted parameters.
 - Handles errors such as bad requests, timeouts, and unknown hosts.
@@ -14,7 +14,7 @@ This task involved integrating the TCP client from Task 1 into an HTTP server, e
 - Returns server responses back as HTTP responses.
 
 
-## How It Works
+### How It Works
 1. The server listens on a specified port.
 2. Clients send GET requests in the format:
 - GET /ask?hostname=&port=&string=&timeout=&limit=&shutdown=<true/false> HTTP/1.1
@@ -23,7 +23,6 @@ This task involved integrating the TCP client from Task 1 into an HTTP server, e
 
 
 
-## Classes
 
 ### `HTTPAsk.java`
 The entry point to the HTTP server.
