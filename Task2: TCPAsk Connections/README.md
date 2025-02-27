@@ -1,17 +1,9 @@
-Task 2: HTTPEcho Server
+# TCPAsk Connections 
 
-For this task, I built an HTTP server that listens for client connections and echoes back any data it receives, formatted as a valid HTTP response. 
-The server processes incoming HTTP requests and sends the received content back in the response body with a “200 OK” status.
+A lightweight Java TCP client for communicating with a server over a TCP connection. It supports configurable timeouts, response size limits, and optional output shutdown for precise communication control.
 
-I implemented the server to handle incoming HTTP requests, parse the data, and send it back in a properly structured HTTP response. 
-
-`TCPAsk.java` – An example Java program that uses the `tcpclient.TCPClient` class.
-
-
-tcpclient.tcpclient.TCPClient - Java TCP Client with Timeout, Shutdown, and Limit Features
-This Java class implements a TCP client that connects to a specified server and port, sends data, and receives a response. It supports:
-- Timeout handling – Stops reading if the server takes too long to respond.
-- Shutdown option – Allows closing the output stream after sending data.
-- Data limit enforcement – Restricts the amount of data received from the server.
-
-The client reads data from the server into a buffer, ensuring it respects the timeout and data limit settings before closing the connection.
+## Features
+- Customizable Timeout – Set a timeout to prevent indefinite waiting for a server response.
+- Data Limit Handling – Restrict the maximum amount of data received from the server.
+- Output Stream Shutdown – Optionally close the output stream after sending data.
+- Robust Error Handling – Handles timeouts and ensures proper resource management.
