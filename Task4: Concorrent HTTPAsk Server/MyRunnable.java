@@ -5,7 +5,15 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 
-public static class MyRunnable implements Runnable {
+public class MyRunnable implements Runnable {
+
+    static String hostname = "";
+    static String string = "";
+    static int port;
+    static Integer servicePort = null;
+    static boolean shutdown = false;
+    static Integer limit = null;
+    static Integer timeout = null;
 
 
     private static final String HTTP400 = "HTTP/1.1 400 Bad Request\r\n";

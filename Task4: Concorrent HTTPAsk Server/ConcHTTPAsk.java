@@ -3,15 +3,7 @@ import java.io.*;
 
 public class ConcHTTPAsk {
 
-
-    static String hostname = "";
-    static String string = "";
     static int port;
-    static Integer servicePort = null;
-    static boolean shutdown = false;
-    static Integer limit = null;
-    static Integer timeout = null;
-
 
     public static void main(String[] args) throws IOException {
         port = Integer.parseInt(args[0]);  //Server port, main method takes one argument, the port number
