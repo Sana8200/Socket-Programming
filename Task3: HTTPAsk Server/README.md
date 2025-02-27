@@ -8,9 +8,10 @@ This task involved integrating the TCP client from Task 1 into an HTTP server, e
 
 ## Features
 - Parses HTTP GET requests with query parameters.
-- Communicates with a TCP server based on the extracted parameters.
+- Communicates with a specified TCP server based on extracted parameters.
 - Handles errors such as bad requests, timeouts, and unknown hosts.
-- Supports optional parameters like timeout, limit, and shutdown.
+- Supports optional parameters like timeout, limit, and shutdown flags.
+- Returns server responses back as HTTP responses.
 
 
 ## How It Works
@@ -25,24 +26,45 @@ This task involved integrating the TCP client from Task 1 into an HTTP server, e
 ## Classes
 
 ### `HTTPAsk.java`
-The main class that starts the HTTP server.
-
-- *`main(String[] args)`*
-Starts the server and listens for incoming connections.
+The entry point to the HTTP server.
+- *`main(String[] args):`* Starts the server and listens for incoming connections.
 
 ### `AcceptClient.java`
-Processes client requests, extracts query parameters, and communicates with the TCP server.
+Handles incoming client requests, extracts query parameters, and communicates with the TCP server.
+
+Methods:
+*`acceptingClient(Socket clientSocket)`*
+- Reads and parses the incoming HTTP request.
+- Extracts the query parameters and validates them.
+- Calls ParseRequest.parseRequests() to extract hostname, port, and optional parameters.
+- Uses TCPClient to forward the request to the target TCP server.
+- Handles various errors (e.g., bad requests, timeouts, unknown hosts).
+- Sends the response back to the HTTP client.
 
 ### `ParseRequest.java`
-Parses the HTTP GET request and extracts required parameters.
+Parses the HTTP GET requests and extracts the necessary parameters for communication with the target server.
 
+Extracts query parameters from the HTTP GET request and validates them.
+
+Methods:
+*`parseRequests(String request)`*
+- Splits and processes the request string.
+- Validates required fields (hostname, port).
+- Extracts optional parameters (string, timeout, limit, shutdown).
+- Throws exceptions for malformed or missing required parameters.
 
 
 ### `TCPClient`
-A helper class for communicating with a TCP server.
+A helper class for communicating with the TCP server.
 
 - *`TCPClient(boolean shutdown, Integer timeout, Integer limit)`*
 Constructor to initialize TCP client settings.
 
-- *`askServer(String hostname, int port, byte[] toServerBytes)`* 
-Connects to the TCP server, sends data, and retrieves the response.
+Methods:
+*`askServer(String hostname, int port, byte[] toServerBytes)`*
+- Establishes a TCP connection to the given hostname and port.
+- Sends the provided byte data to the server.
+- Reads the response, adhering to the specified limit and timeout settings.
+- Shuts down the connection if the shutdown flag is enabled.
+- Returns the response as a byte array.
+
