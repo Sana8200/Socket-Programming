@@ -8,6 +8,7 @@ A lightweight Java TCP client for communicating with a server over a TCP connect
 - Output Stream Shutdown – Optionally close the output stream after sending data.
 - Robust Error Handling – Handles timeouts and ensures proper resource management.
 
+---
 
 ### `TCPClient`
 communicating with the TCP server.
