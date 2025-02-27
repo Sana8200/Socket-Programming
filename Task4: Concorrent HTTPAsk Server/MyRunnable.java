@@ -92,7 +92,7 @@ public class MyRunnable implements Runnable {
             String httpDate = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now());
 
             String clientResponse = responseStatus +
-                    "Server: SanaServer\r\n" +
+                    "Server: HTTP Ask Server\r\n" +
                     "Content-Type: text/plain; charset=UTF-8\r\n" +
                     "Date: " + httpDate + "\r\n" +
                     "Content-Length: " + serviceResponseBody.length() + "\r\n\r\n"
