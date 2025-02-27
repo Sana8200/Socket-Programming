@@ -1,9 +1,10 @@
 ## HTTPAsk Server
 
-In Task 3, I developed an HTTP server that acts as both a server and a client. It accepts HTTP requests with query parameters specifying the target server’s hostname and port. 
-Upon receiving a request, the server uses a tcpclient.tcpclient.TCPClient to communicate with the specified server, retrieves the response, and sends it back as part of the HTTP response body.
+In Task 3, I developed an HTTP server that listens for incoming HTTP requests. The server expects GET requests with query parameters specifying the target server’s hostname, port, and optional parameters such as timeout, data limit, and shutdown flag. Upon receiving a request, the server extracts and validates these parameters using ParseRequest.
 
-This task involved integrating the TCP client from Task 1 into an HTTP server, effectively creating a web-based version of the TCP client.
+It then creates a TCPClient instance using `tcpclient.TCPClient` class to establish a TCP connection with the specified hostname and port, optionally sending a message if provided. The TCPClient retrieves the response from the remote server while respecting the configured timeout, limit, and shutdown settings. Finally, the HTTP server formats the TCP server’s response into a valid HTTP response and sends it back to the client.
+
+This implementation bridges HTTP and raw TCP communication, allowing users to interact with TCP servers via HTTP requests.
 
 
 ### Features
