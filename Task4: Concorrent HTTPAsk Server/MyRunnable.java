@@ -7,6 +7,11 @@ import java.time.format.DateTimeFormatter;
 
 public static class MyRunnable implements Runnable {
 
+
+    private static final String HTTP400 = "HTTP/1.1 400 Bad Request\r\n";
+    private static final String HTTP404 = "HTTP/1.1 404 Not Found\r\n";
+    private static final String HTTP408 = "HTTP/1.1 408 Request Timeout\r\n";
+
     private final Socket clientSocket;
 
     public MyRunnable(Socket clientSocket) {
