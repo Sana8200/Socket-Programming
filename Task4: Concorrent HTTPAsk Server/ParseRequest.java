@@ -1,12 +1,12 @@
 
 public class ParseRequest {
 
-    static String hostname = "";
-    static String string = "";
-    static Integer servicePort = null;
-    static boolean shutdown = false;
-    static Integer limit = null;
-    static Integer timeout = null;
+    private static String hostname = "";
+    private static String string = "";
+    private static Integer servicePort = null;
+    private static boolean shutdown = false;
+    private static Integer limit = null;
+    private static Integer timeout = null;
 
     static final String HTTP400 = "HTTP/1.1 400 Bad Request\r\n";
 

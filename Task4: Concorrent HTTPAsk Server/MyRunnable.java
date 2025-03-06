@@ -8,13 +8,12 @@ import java.time.format.DateTimeFormatter;
 
 public class MyRunnable implements Runnable {
 
-    static String hostname = "";
-    static String string = "";
-    static int port;
-    static Integer servicePort = null;
-    static boolean shutdown = false;
-    static Integer limit = null;
-    static Integer timeout = null;
+    private static String hostname = "";
+    private static String string = "";
+    private static Integer servicePort = null;
+    private static boolean shutdown = false;
+    private static Integer limit = null;
+    private static Integer timeout = null;
 
 
     private static final String HTTP400 = "HTTP/1.1 400 Bad Request\r\n";
@@ -69,7 +68,7 @@ public class MyRunnable implements Runnable {
                 serviceResponseBody = new String(serviceResponseBytes, StandardCharsets.UTF_8);
 
                 System.out.println("Successfully communicated with the target server");
-                System.out.println("| Port: " + port + " | Hostname: " + hostname);
+                System.out.println("| Target Service Port: " + servicePort + " | Hostname: " + hostname);
                 System.out.println("| Timeout: " + timeout + " | Shutdown: " + "| Limit: " + limit + "\n");
 
             } catch (IllegalArgumentException e) {
